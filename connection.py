@@ -19,7 +19,6 @@ class Connection:
         try:
             driver_instance = GraphDatabase.driver(self.__uri, auth=(self.__username, self.__password))
             self.__driver = driver_instance
-            print("Driver conectado exitosamente:", self.__driver)
         except Exception as e:
             print(f"No se pudo conectar: {e}. Chequea la conexión o instancia el objeto de conexion primero")
             self.__driver = None

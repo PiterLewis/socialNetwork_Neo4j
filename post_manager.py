@@ -10,18 +10,7 @@ class PostManager:
         if mentions is None:
             mentions = []
         
-        query = (
-            "MATCH (u:Person {name: $author}) "
-            "CREATE (p:Post {title: $title, body: $body, date: $timestamp}) "
-            "CREATE (u)-[:PUBLISHED]->(p) "
-            "WITH p "
-            "UNWIND $mentions AS connection_name "
-            "MATCH (m:Person {name: connection_name}) "
-            "CREATE (p)-[:MENTIONS]->(m) "
-            "RETURN p"
-        )
-
-        
+        # If no mentions, handle gracefully
         if not mentions:
             query = (
                 "MATCH (u:Person {name: $author}) "
@@ -29,8 +18,31 @@ class PostManager:
                 "CREATE (u)-[:PUBLISHED]->(p) "
                 "RETURN p"
             )
+            self.driver.execute_query(query, author=author_name, title=title, body=body, timestamp=timestamp, mentions=mentions, database="neo4j")
+        else:
+            # Validate mentions
+            missing_users = []
+            for mentioned_name in mentions:
+                check_query = "MATCH (u:Person {name: $name}) RETURN u"
+                result, _, _ = self.driver.execute_query(check_query, name=mentioned_name, database="neo4j")
+                if not result:
+                    missing_users.append(mentioned_name)
+            
+            if missing_users:
+                raise ValueError(f"Los siguientes usuarios mencionados no existen: {', '.join(missing_users)}")
 
-        self.driver.execute_query(query, author=author_name, title=title, body=body, timestamp=timestamp, mentions=mentions, database="neo4j")
+            query = (
+                "MATCH (u:Person {name: $author}) "
+                "CREATE (p:Post {title: $title, body: $body, date: $timestamp}) "
+                "CREATE (u)-[:PUBLISHED]->(p) "
+                "WITH p "
+                "UNWIND $mentions AS connection_name "
+                "MATCH (m:Person {name: connection_name}) "
+                "CREATE (p)-[:MENTIONS]->(m) "
+                "RETURN p"
+            )
+            self.driver.execute_query(query, author=author_name, title=title, body=body, timestamp=timestamp, mentions=mentions, database="neo4j")
+            
         print(f"Post created by {author_name}")
 
     def get_mentioned_work_colleagues(self, author_name):

@@ -4,10 +4,23 @@
 
 ## ¿Qué hace este código?
 Hemos creado una pequeña red social simulada donde gestionamos:
-- **Usuarios** (Personas, Empresas, Centros Educativos).
-- **Relaciones** (Amistad, Familia, Trabajo, Estudios).
-- **Interacciones** (Mensajes privados y Publicaciones en el muro).
-- **Recomendaciones** (Sugerencias de amistad basadas en amigos en común o interacciones).
+
+### 1. Gestión de Usuarios y Relaciones
+- **Usuarios**: Podemos crear personas, empresas y centros educativos.
+- **Relaciones**: Conectamos a los usuarios mediante relaciones de:
+    - Amistad (`FRIEND`)
+    - Familia (`FAMILY`)
+    - Trabajo (`WORK`)
+    - Estudios (`ACADEMIC`)
+
+### 2. Interacciones Sociales
+- **Mensajería Privada**: Los usuarios pueden enviarse mensajes entre sí, creando hilos de conversación.
+- **Publicaciones (Posts)**: Los usuarios pueden publicar en su muro y **mencionar** a otros usuarios.
+
+### 3. Sistema de Recomendaciones
+El sistema es inteligente y puede sugerir nuevos amigos basándose en:
+- **Saltos**: "Amigos de amigos" (o amigos de amigos de amigos...).
+- **Interacción**: Personas con las que interactúas mucho pero aún no sigues.
 
 Todo esto se conecta a una base de datos **Neo4j** para guardar y consultar la información de forma gráfica.
 
@@ -18,7 +31,7 @@ Para que el código funcione en su ordenador, necesita seguir estos sencillos pa
 ### 1. Configurar las credenciales
 El proyecto necesita conectarse a su base de datos Neo4j. Tiene dos opciones para hacerlo:
 
-**Opción A (Recomendada): Usar archivo .env**
+**Opción A: Usar archivo .env**
 Cree un archivo llamado `.env` en la misma carpeta que estos archivos y ponga sus claves dentro siguiendo este formato:
 
 ```env
@@ -41,6 +54,30 @@ uv run main.py
 (O `python main.py` si no usa `uv`)
 
 ### 3. Usar la consola
-Al iniciar, verá un menú muy sencillo en la consola. Seleccione la opción **1** para cargar los datos de prueba (nuestros usuarios y relaciones de ejemplo) y ver cómo se llena la base de datos mágicamente.
+Al iniciar, verá un menú interactivo en la consola. Seleccione la opción **1** para acceder a todas las herramientas disponibles. A continuación detallamos qué hace cada opción:
+
+1. **Generar Ejemplos (Seed)**: 
+   - Carga automáticamente un conjunto de usuarios (Ana, Beto, Carlos...), relaciones, mensajes y publicaciones de prueba.
+   - **Nota**: Borra la base de datos antes de cargar los nuevos datos para evitar duplicados.
+
+2. **Crear Usuario**: 
+   - Le pedirá el **nombre** del usuario.
+   - Le pedirá el **tipo** de usuario (puede ser `Person`, `Company` o `EducationCenter`). Si pulsa Enter, por defecto será `Person`.
+
+3. **Crear Relación**: 
+   - Le pedirá el nombre del **primer usuario**.
+   - Le pedirá el nombre del **segundo usuario**.
+   - Le pedirá el **tipo de relación** (`FRIEND`, `FAMILY`, `ACADEMIC`, `WORK`).
+
+4. **Crear Publicación (Post)**: 
+   - Le pedirá el nombre del **autor**.
+   - Le pedirá el **título** y el **contenido** del post.
+   - Le pedirá si quiere **mencionar** a alguien (escriba los nombres separados por comas).
+   - **Importante**: El sistema verificará si los usuarios mencionados existen. Si no existen, le avisará y no creará el post.
+
+5. **Limpiar Base de Datos**: 
+   - Borra **todos** los nodos y relaciones de la base de datos. Úselo con precaución.
+
+6. **Salir**: Cierra el programa.
 
 ¡Esperamos que le guste!

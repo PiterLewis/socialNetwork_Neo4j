@@ -17,7 +17,7 @@ def seed():
     mm = MessageManager()
     pm = PostManager()
 
-    print("\n--- Sembrando Usuarios ---")
+    print("\n--- Generando Ejemplos de Usuarios ---")
     u1 = um.create_user("Ana", "Person")
     u2 = um.create_user("Beto", "Person")
     u3 = um.create_user("Carlos", "Person")
@@ -25,7 +25,7 @@ def seed():
     u5 = um.create_user("Eva", "Person")
     c1 = um.create_user("TecnoSoluciones", "Company")
     e1 = um.create_user("Universidad de Datos", "EducationCenter")
-    print("\n--- Sembrando Relaciones ---")
+    print("\n--- Generando Ejemplos de Relaciones ---")
     um.create_connection("Ana", "Beto", "FRIEND")
     um.create_connection("Beto", "Carlos", "FRIEND")
     um.create_connection("Ana", "David", "FAMILY") 
@@ -33,7 +33,7 @@ def seed():
     um.create_connection("Ana", "TecnoSoluciones", "WORK")
     um.create_connection("Beto", "TecnoSoluciones", "WORK")
     um.create_connection("Carlos", "Universidad de Datos", "ACADEMIC")
-    print("\n--- Sembrando Mensajes ---")
+    print("\n--- Generando Ejemplos de Mensajes ---")
     mm.send_message("Ana", "Beto", "¡Hola Beto!", "conv1", 1)
     mm.send_message("Beto", "Ana", "Hola Ana, ¿cómo estás?", "conv1", 2)
     mm.send_message("Ana", "Beto", "Bien, trabajando en Neo4j.", "conv1", 3) 
@@ -41,19 +41,21 @@ def seed():
     mm.send_message("Carlos", "Beto", "Todo bien Beto", "conv2", 2)
     mm.send_message("Beto", "Carlos", "Aquí andamos", "conv2", 3)
     mm.send_message("Ana", "David", "Hola tío David", "conv3", 1)
-    print("\n--- Sembrando Publicaciones ---")
+    print("\n--- Generando Ejemplos de Publicaciones ---")
     um.create_connection("Ana", "Beto", "WORK") 
     pm.create_post("Ana", "Actualización del Proyecto", "Estamos progresando mucho", mentions=["Beto", "Carlos"])
-    print("Sembrado completo.")
+    print("\n--- Ejemplos completados ---")
+
 
 def interactive_menu():
     um = UserManager()
+    pm = PostManager()
     
     while True:
         print("\n==============================================")
         print("       CONSOLA INTERACTIVA DE NEO4J")
         print("==============================================")
-        print("1. Sembrar datos de ejemplo (Seed)")
+        print("1. Generar Ejemplos")
         print("2. Crear Usuario")
         print("3. Crear Relación")
         print("4. Crear Publicación (Post)")
@@ -103,7 +105,7 @@ def interactive_menu():
                 if confirm.lower() == 's':
                     clear_db()
             case "6":
-                print("¡Hasta luego!")
+                print("Cerrando...")
                 break
             case _:
                 print("Opción no válida, intente de nuevo.")
