@@ -1,4 +1,4 @@
-from conexion import obtener_conexion
+from connection import obtener_conexion
 from datetime import datetime
 
 class GestorPublicaciones:
@@ -48,7 +48,7 @@ class GestorPublicaciones:
     def obtener_colegas_trabajo_mencionados(self, nombre_autor):
         consulta = (
             "MATCH (autor:Persona {nombre: $nombre})-[:PUBLICO]->(p:Publicacion)-[:MENCIONA]->(mencionado:Persona) "
-            "WHERE (autor)-[:TRABAJO]-(mencionado) "
+            "WHERE (autor)-[:LABORAL]-(mencionado) "
             "RETURN DISTINCT mencionado.nombre AS nombre"
         )
         resultado, resumen, llaves = self.driver.execute_query(consulta, nombre=nombre_autor, database="neo4j")

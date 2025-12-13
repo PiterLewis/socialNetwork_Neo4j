@@ -8,10 +8,10 @@ Hemos creado una pequeña red social simulada donde gestionamos:
 ### 1. Gestión de Usuarios y Relaciones
 - **Usuarios**: Podemos crear personas, empresas y centros educativos.
 - **Relaciones**: Conectamos a los usuarios mediante relaciones de:
-    - Amistad (`FRIEND`)
-    - Familia (`FAMILY`)
-    - Trabajo (`WORK`)
-    - Estudios (`ACADEMIC`)
+    - Amistad (`AMISTAD`)
+    - Familia (`FAMILIA`)
+    - Trabajo (`LABORAL`)
+    - Estudios (`ACADÉMICO`)
 
 ### 2. Interacciones Sociales
 - **Mensajería Privada**: Los usuarios pueden enviarse mensajes entre sí, creando hilos de conversación.
@@ -77,12 +77,12 @@ Al iniciar, verá un menú interactivo en la consola. Seleccione la opción **1*
 
 2. **Crear Usuario**: 
    - Le pedirá el **nombre** del usuario.
-   - Le pedirá el **tipo** de usuario (puede ser `Person`, `Company` o `EducationCenter`). Si pulsa Enter, por defecto será `Person`.
+   - Le pedirá el **tipo** de usuario (puede ser `Persona`, `Empresa` o `CentroEducativo`). Si pulsa Enter, por defecto será `Persona`.
 
 3. **Crear Relación**: 
    - Le pedirá el nombre del **primer usuario**.
    - Le pedirá el nombre del **segundo usuario**.
-   - Le pedirá el **tipo de relación** (`FRIEND`, `FAMILY`, `ACADEMIC`, `WORK`).
+   - Le pedirá el **tipo de relación** (`AMISTAD`, `FAMILIA`, `ACADÉMICO`, `LABORAL`).
 
 4. **Crear Publicación (Post)**: 
    - Le pedirá el nombre del **autor**.

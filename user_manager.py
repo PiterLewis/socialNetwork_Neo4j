@@ -1,5 +1,5 @@
-from conexion import obtener_conexion
-# Nota: conexion.py ahora exporta obtener_conexion y la clase Conexion
+from connection import obtener_conexion
+# Nota: connection.py ahora exporta obtener_conexion y la clase Conexion
 
 class GestorUsuarios:
     def __init__(self):
@@ -28,9 +28,9 @@ class GestorUsuarios:
 
     def crear_relacion(self, nombre1, nombre2, tipo_relacion):
         """
-        tipo_relacion: 'AMIGO', 'FAMILIA', 'ACADEMICO', 'TRABAJO'
+        tipo_relacion: 'AMISTAD', 'FAMILIA', 'ACADÉMICO', 'LABORAL'
         """
-        tipos_validos = ['AMIGO', 'FAMILIA', 'ACADEMICO', 'TRABAJO']
+        tipos_validos = ['AMISTAD', 'FAMILIA', 'ACADÉMICO', 'LABORAL']
         if tipo_relacion not in tipos_validos:
             raise ValueError(f"Tipo de relación inválido. Debe ser uno de {tipos_validos}")
 
@@ -44,7 +44,7 @@ class GestorUsuarios:
 
     def obtener_amigos_y_familia(self, nombre):
         consulta = (
-            "MATCH (u:Persona {nombre: $nombre})-[r:AMIGO|FAMILIA]-(pariente) "
+            "MATCH (u:Persona {nombre: $nombre})-[r:AMISTAD|FAMILIA]-(pariente) "
             "RETURN pariente.nombre AS nombre, type(r) AS relacion"
         )
         resultado, resumen, llaves = self.driver.execute_query(consulta, nombre=nombre, database="neo4j")

@@ -1,4 +1,4 @@
-from conexion import obtener_conexion
+from connection import obtener_conexion
 from datetime import datetime
 
 class GestorMensajes:

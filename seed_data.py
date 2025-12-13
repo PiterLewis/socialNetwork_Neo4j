@@ -1,7 +1,7 @@
-from gestor_usuarios import GestorUsuarios
-from gestor_mensajes import GestorMensajes
-from gestor_publicaciones import GestorPublicaciones
-from conexion import obtener_conexion
+from user_manager import GestorUsuarios
+from message_manager import GestorMensajes
+from post_manager import GestorPublicaciones
+from connection import obtener_conexion
 
 def limpiar_bd():
     conn = obtener_conexion()
@@ -26,13 +26,13 @@ def semilla():
     c1 = gu.crear_usuario("TecnoSoluciones", "Empresa")
     e1 = gu.crear_usuario("Universidad de Datos", "CentroEducativo")
     print("\n--- Generando Ejemplos de Relaciones ---")
-    gu.crear_relacion("Ana", "Beto", "AMIGO")
-    gu.crear_relacion("Beto", "Carlos", "AMIGO")
+    gu.crear_relacion("Ana", "Beto", "AMISTAD")
+    gu.crear_relacion("Beto", "Carlos", "AMISTAD")
     gu.crear_relacion("Ana", "David", "FAMILIA") 
     gu.crear_relacion("David", "Eva", "FAMILIA")   
-    gu.crear_relacion("Ana", "TecnoSoluciones", "TRABAJO")
-    gu.crear_relacion("Beto", "TecnoSoluciones", "TRABAJO")
-    gu.crear_relacion("Carlos", "Universidad de Datos", "ACADEMICO")
+    gu.crear_relacion("Ana", "TecnoSoluciones", "LABORAL")
+    gu.crear_relacion("Beto", "TecnoSoluciones", "LABORAL")
+    gu.crear_relacion("Carlos", "Universidad de Datos", "ACADÉMICO")
     print("\n--- Generando Ejemplos de Mensajes ---")
     gm.enviar_mensaje("Ana", "Beto", "¡Hola Beto!", "conv1", 1)
     gm.enviar_mensaje("Beto", "Ana", "Hola Ana, ¿cómo estás?", "conv1", 2)
@@ -42,7 +42,7 @@ def semilla():
     gm.enviar_mensaje("Beto", "Carlos", "Aquí andamos", "conv2", 3)
     gm.enviar_mensaje("Ana", "David", "Hola tío David", "conv3", 1)
     print("\n--- Generando Ejemplos de Publicaciones ---")
-    gu.crear_relacion("Ana", "Beto", "TRABAJO") 
+    gu.crear_relacion("Ana", "Beto", "LABORAL") 
     gp.crear_publicacion("Ana", "Actualización del Proyecto", "Estamos progresando mucho", menciones=["Beto", "Carlos"])
     print("\n--- Ejemplos completados ---")
 
@@ -82,7 +82,7 @@ def menu_interactivo():
             case "3":
                 nombre1 = input("Nombre del primer usuario: ")
                 nombre2 = input("Nombre del segundo usuario: ")
-                print("Tipos disponibles: AMIGO, FAMILIA, ACADEMICO, TRABAJO")
+                print("Tipos disponibles: AMISTAD, FAMILIA, ACADÉMICO, LABORAL")
                 tipo_rel = input("Tipo de relación: ")
                 try:
                     gu.crear_relacion(nombre1, nombre2, tipo_rel)
