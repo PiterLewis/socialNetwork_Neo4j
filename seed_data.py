@@ -8,7 +8,7 @@ def clear_db():
     conn.connect_to_neo()
     conn.clean_all()
     conn.close()
-    print("Database cleared.")
+    print("Base de datos limpia")
 
 def seed():
     clear_db()
