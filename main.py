@@ -1,27 +1,25 @@
 from neo4j import GraphDatabase
-from connection import Connection
+from connection import Connection, get_connection 
+import seed_data
 
-uri = "bolt://172.28.98.19:7687"
-username = "neo4j"
-password = "xhantiago2005"
+def console():
+    print("==============================================")
+    print("Bienvenido a la consola de Neo4j")
+    print("==============================================")
+    print("1. Ejecutar nuestra muestra de datos")
+    print("2. Salir")
+    print("==============================================")
+    option = input("Seleccione una opción: ")
+    if option == "1":
+        seed_data.seed()
+    elif option == "2":
+        print("Hasta luego")
+    else:
+        print("Opción no válida")
 
 
 def main():
-    print("Main execution")
-    
-    conn = Connection(username, password, uri)
-    driver = conn.connect_to_neo()
-    conn.clean_all()
-    driver.execute_query("CREATE (p:Person {name : $name, edad: $edad})-[:amigo]->(s:Person {name: $second_name, edad: $second_age}) RETURN p,s", name="Fernando", edad=20, second_name="Santiago", second_age=20, database="neo4j")
-    driver.execute_query("""
-    CREATE (u:Universidad {name: $name, loc: $loc})
-    """, name="U-TAD", loc="Calle Playa de Liencres, 2", database="neo4j")
-    driver.execute_query("""
-                    MATCH (p:Person) WHERE p.edad = $edad_target
-                    MATCH (u:Universidad {name: $university_name})
-                    MERGE (p)-[:ESTUDIA_EN]->(u)
-                    RETURN p.name AS Persona, u.name AS Universidad
-                """, edad_target=20, university_name="U-TAD", database="neo4j")
+    console()
 
 if __name__ == "__main__":
     main()

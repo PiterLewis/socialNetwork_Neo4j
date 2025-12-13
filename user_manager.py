@@ -12,9 +12,8 @@ class UserManager:
             f"MERGE (u:{user_type} {{name: $name}}) "
             "RETURN u"
         )
-        with self.driver.session() as session:
-            result = session.run(query, name=name)
-            return result.single()[0]
+        result, summary, keys = self.driver.execute_query(query, name=name, database="neo4j")
+        return result[0]
 
     def create_connection(self, name1, name2, relationship_type):
         """
@@ -29,17 +28,16 @@ class UserManager:
             f"MERGE (a)-[r:{relationship_type}]->(b) "
             "RETURN r"
         )
-        with self.driver.session() as session:
-            result = session.run(query, name1=name1, name2=name2)
-            return result.single()
+        result, summary, keys = self.driver.execute_query(query, name1=name1, name2=name2, database="neo4j")
+        return result[0]
 
     def get_friends_and_family(self, name):
         query = (
             "MATCH (u:Person {name: $name})-[r:FRIEND|FAMILY]-(relative) "
             "RETURN relative.name AS name, type(r) AS relationship"
         )
-        with self.driver.session() as session:
-            return [record.data() for record in session.run(query, name=name)]
+        result, summary, keys = self.driver.execute_query(query, name=name, database="neo4j")
+        return [record.data() for record in result]
 
     def get_family_of_family(self, name):
         query = (
@@ -47,5 +45,5 @@ class UserManager:
             "WHERE fof <> u "
             "RETURN DISTINCT fof.name AS name"
         )
-        with self.driver.session() as session:
-            return [record["name"] for record in session.run(query, name=name)]
+        result, summary, keys = self.driver.execute_query(query, name=name, database="neo4j")
+        return [record["name"] for record in result]

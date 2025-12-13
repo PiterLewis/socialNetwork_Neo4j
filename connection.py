@@ -1,11 +1,15 @@
 from neo4j import GraphDatabase
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Connection:
 
-    def __init__(self, username_param, password_param, uri_param):
-        self.__username = username_param
-        self.__password = password_param
-        self.__uri = uri_param
+    def __init__(self):
+        self.__username = os.getenv("NEO4J_USERNAME")
+        self.__password = os.getenv("NEO4J_PASSWORD")
+        self.__uri = os.getenv("NEO4J_CONN_URI")
         self.__driver = None 
 
     def connect_to_neo(self):
@@ -20,6 +24,9 @@ class Connection:
             print(f"No se pudo conectar: {e}. Chequea la conexión o instancia el objeto de conexion primero")
             self.__driver = None
         return self.__driver
+
+    def get_driver(self):
+        return self.connect_to_neo()
 
     def close(self):
         if self.__driver:
@@ -41,3 +48,7 @@ class Connection:
         
         except Exception as e:
             print(f"Error al limpiar la base de datos: {e}")
+
+
+def get_connection():
+    return Connection()

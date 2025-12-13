@@ -20,8 +20,8 @@ class PostManager:
             "CREATE (p)-[:MENTIONS]->(m) "
             "RETURN p"
         )
+
         
-        # If no mentions, handle gracefully
         if not mentions:
             query = (
                 "MATCH (u:Person {name: $author}) "
@@ -30,16 +30,14 @@ class PostManager:
                 "RETURN p"
             )
 
-        with self.driver.session() as session:
-            session.run(query, author=author_name, title=title, body=body, timestamp=timestamp, mentions=mentions)
-            print(f"Post created by {author_name}")
+        self.driver.execute_query(query, author=author_name, title=title, body=body, timestamp=timestamp, mentions=mentions, database="neo4j")
+        print(f"Post created by {author_name}")
 
     def get_mentioned_work_colleagues(self, author_name):
-        # Users mentioned by author who ALSO have a WORK relationship with author
         query = (
             "MATCH (author:Person {name: $name})-[:PUBLISHED]->(p:Post)-[:MENTIONS]->(mentioned:Person) "
             "WHERE (author)-[:WORK]-(mentioned) "
             "RETURN DISTINCT mentioned.name AS name"
         )
-        with self.driver.session() as session:
-            return [record["name"] for record in session.run(query, name=author_name)]
+        result, summary, keys = self.driver.execute_query(query, name=author_name, database="neo4j")
+        return [record["name"] for record in result]

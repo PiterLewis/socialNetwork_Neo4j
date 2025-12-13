@@ -12,16 +12,14 @@ class MessageManager:
             "CREATE (a)-[r:SENT_MESSAGE { "
             "   content: $content, "
             "   date: $timestamp, "
-            "   conversation_id: $conv_id, "
             "   sequence_number: $seq_num "
             "}]->(b) "
             "RETURN r"
         )
-        with self.driver.session() as session:
-            session.run(query, sender=sender_name, receiver=receiver_name, 
+        self.driver.execute_query(query, sender=sender_name, receiver=receiver_name, 
                        content=content, timestamp=timestamp, 
-                       conv_id=conversation_id, seq_num=seq_num)
-            print(f"Message sent from {sender_name} to {receiver_name}")
+                       conv_id=conversation_id, seq_num=seq_num, database="neo4j")
+        print(f"Message sent from {sender_name} to {receiver_name}")
 
     def get_messages_after(self, sender_name, receiver_name, date_str):
         query = (
@@ -29,11 +27,10 @@ class MessageManager:
             "WHERE r.date > $date "
             "RETURN r.content AS content, r.date AS date"
         )
-        with self.driver.session() as session:
-            return [record.data() for record in session.run(query, sender=sender_name, receiver=receiver_name, date=date_str)]
+        result, summary, keys = self.driver.execute_query(query, sender=sender_name, receiver=receiver_name, date=date_str, database="neo4j")
+        return [record.data() for record in result]
 
     def get_conversation(self, user1, user2):
-        # Capture messages in both directions
         query = (
             "MATCH (a:Person)-[r:SENT_MESSAGE]-(b:Person) "
             "WHERE (a.name = $u1 AND b.name = $u2) OR (a.name = $u2 AND b.name = $u1) "
@@ -41,5 +38,5 @@ class MessageManager:
             "       startNode(r).name AS sender, r.content AS content, r.date AS date "
             "ORDER BY r.date ASC"
         )
-        with self.driver.session() as session:
-            return [record.data() for record in session.run(query, u1=user1, u2=user2)]
+        result, summary, keys = self.driver.execute_query(query, u1=user1, u2=user2, database="neo4j")
+        return [record.data() for record in result]
