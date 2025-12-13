@@ -1,49 +1,60 @@
-from connection import get_connection
+from connection import obtener_conexion
+# Nota: connection.py ahora exporta obtener_conexion y la clase Conexion
 
-class UserManager:
+class GestorUsuarios:
     def __init__(self):
-        self.driver = get_connection().get_driver()
+        self.driver = obtener_conexion().obtener_driver()
 
-    def create_user(self, name, user_type="Person"):
+    def crear_usuario(self, nombre, tipo_usuario="Persona"):
         """
-        user_type can be 'Person', 'Company', or 'EducationCenter'
+        tipo_usuario puede ser 'Persona', 'Empresa', o 'CentroEducativo'
         """
-        query = (
-            f"MERGE (u:{user_type} {{name: $name}}) "
+        consulta = (
+            f"MERGE (u:{tipo_usuario} {{nombre: $nombre, tipo: $tipo_usuario}}) "
             "RETURN u"
         )
-        result, summary, keys = self.driver.execute_query(query, name=name, database="neo4j")
-        return result[0]
+        # Nota: He agregado 'tipo' como propiedad para persistir el string original si necesario, 
+        # pero principalmente cambiamos el Label del nodo.
+        # En el código original era MERGE (u:{user_type} {name: $name})
+        # Ahora será MERGE (u:{tipo_usuario} {nombre: $nombre})
+        
+        consulta = (
+            f"MERGE (u:{tipo_usuario} {{nombre: $nombre}}) "
+            "RETURN u"
+        )
+        
+        resultado, resumen, llaves = self.driver.execute_query(consulta, nombre=nombre, database="neo4j")
+        return resultado[0]
 
-    def create_connection(self, name1, name2, relationship_type):
+    def crear_relacion(self, nombre1, nombre2, tipo_relacion):
         """
-        relationship_type: 'FRIEND', 'FAMILY', 'ACADEMIC', 'WORK'
+        tipo_relacion: 'AMIGO', 'FAMILIA', 'ACADEMICO', 'TRABAJO'
         """
-        valid_types = ['FRIEND', 'FAMILY', 'ACADEMIC', 'WORK']
-        if relationship_type not in valid_types:
-            raise ValueError(f"Invalid relationship type. Must be one of {valid_types}")
+        tipos_validos = ['AMIGO', 'FAMILIA', 'ACADEMICO', 'TRABAJO']
+        if tipo_relacion not in tipos_validos:
+            raise ValueError(f"Tipo de relación inválido. Debe ser uno de {tipos_validos}")
 
-        query = (
-            "MATCH (a {name: $name1}), (b {name: $name2}) "
-            f"MERGE (a)-[r:{relationship_type}]->(b) "
+        consulta = (
+            "MATCH (a {nombre: $nombre1}), (b {nombre: $nombre2}) "
+            f"MERGE (a)-[r:{tipo_relacion}]->(b) "
             "RETURN r"
         )
-        result, summary, keys = self.driver.execute_query(query, name1=name1, name2=name2, database="neo4j")
-        return result[0]
+        resultado, resumen, llaves = self.driver.execute_query(consulta, nombre1=nombre1, nombre2=nombre2, database="neo4j")
+        return resultado[0]
 
-    def get_friends_and_family(self, name):
-        query = (
-            "MATCH (u:Person {name: $name})-[r:FRIEND|FAMILY]-(relative) "
-            "RETURN relative.name AS name, type(r) AS relationship"
+    def obtener_amigos_y_familia(self, nombre):
+        consulta = (
+            "MATCH (u:Persona {nombre: $nombre})-[r:AMIGO|FAMILIA]-(pariente) "
+            "RETURN pariente.nombre AS nombre, type(r) AS relacion"
         )
-        result, summary, keys = self.driver.execute_query(query, name=name, database="neo4j")
-        return [record.data() for record in result]
+        resultado, resumen, llaves = self.driver.execute_query(consulta, nombre=nombre, database="neo4j")
+        return [registro.data() for registro in resultado]
 
-    def get_family_of_family(self, name):
-        query = (
-            "MATCH (u:Person {name: $name})-[:FAMILY]-(f)-[:FAMILY]-(fof) "
+    def obtener_familia_de_familia(self, nombre):
+        consulta = (
+            "MATCH (u:Persona {nombre: $nombre})-[:FAMILIA]-(f)-[:FAMILIA]-(fof) "
             "WHERE fof <> u "
-            "RETURN DISTINCT fof.name AS name"
+            "RETURN DISTINCT fof.nombre AS nombre"
         )
-        result, summary, keys = self.driver.execute_query(query, name=name, database="neo4j")
-        return [record["name"] for record in result]
+        resultado, resumen, llaves = self.driver.execute_query(consulta, nombre=nombre, database="neo4j")
+        return [registro["nombre"] for registro in resultado]

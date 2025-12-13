@@ -1,55 +1,55 @@
-from user_manager import UserManager
-from message_manager import MessageManager
-from post_manager import PostManager
-from connection import get_connection
+from user_manager import GestorUsuarios
+from message_manager import GestorMensajes
+from post_manager import GestorPublicaciones
+from connection import obtener_conexion
 
-def clear_db():
-    conn = get_connection()
-    conn.connect_to_neo()
-    conn.clean_all()
-    conn.close()
-    print("Database cleared.")
+def limpiar_bd():
+    conn = obtener_conexion()
+    conn.conectar_neo()
+    conn.limpiar_todo()
+    conn.cerrar()
+    print("Base de datos limpiada.")
 
-def seed():
-    clear_db()
+def semilla():
+    limpiar_bd()
     
-    um = UserManager()
-    mm = MessageManager()
-    pm = PostManager()
+    gu = GestorUsuarios()
+    gm = GestorMensajes()
+    gp = GestorPublicaciones()
 
     print("\n--- Generando Ejemplos de Usuarios ---")
-    u1 = um.create_user("Ana", "Person")
-    u2 = um.create_user("Beto", "Person")
-    u3 = um.create_user("Carlos", "Person")
-    u4 = um.create_user("David", "Person")
-    u5 = um.create_user("Eva", "Person")
-    c1 = um.create_user("TecnoSoluciones", "Company")
-    e1 = um.create_user("Universidad de Datos", "EducationCenter")
+    u1 = gu.crear_usuario("Ana", "Persona")
+    u2 = gu.crear_usuario("Beto", "Persona")
+    u3 = gu.crear_usuario("Carlos", "Persona")
+    u4 = gu.crear_usuario("David", "Persona")
+    u5 = gu.crear_usuario("Eva", "Persona")
+    c1 = gu.crear_usuario("TecnoSoluciones", "Empresa")
+    e1 = gu.crear_usuario("Universidad de Datos", "CentroEducativo")
     print("\n--- Generando Ejemplos de Relaciones ---")
-    um.create_connection("Ana", "Beto", "FRIEND")
-    um.create_connection("Beto", "Carlos", "FRIEND")
-    um.create_connection("Ana", "David", "FAMILY") 
-    um.create_connection("David", "Eva", "FAMILY")   
-    um.create_connection("Ana", "TecnoSoluciones", "WORK")
-    um.create_connection("Beto", "TecnoSoluciones", "WORK")
-    um.create_connection("Carlos", "Universidad de Datos", "ACADEMIC")
+    gu.crear_relacion("Ana", "Beto", "AMIGO")
+    gu.crear_relacion("Beto", "Carlos", "AMIGO")
+    gu.crear_relacion("Ana", "David", "FAMILIA") 
+    gu.crear_relacion("David", "Eva", "FAMILIA")   
+    gu.crear_relacion("Ana", "TecnoSoluciones", "TRABAJO")
+    gu.crear_relacion("Beto", "TecnoSoluciones", "TRABAJO")
+    gu.crear_relacion("Carlos", "Universidad de Datos", "ACADEMICO")
     print("\n--- Generando Ejemplos de Mensajes ---")
-    mm.send_message("Ana", "Beto", "¡Hola Beto!", "conv1", 1)
-    mm.send_message("Beto", "Ana", "Hola Ana, ¿cómo estás?", "conv1", 2)
-    mm.send_message("Ana", "Beto", "Bien, trabajando en Neo4j.", "conv1", 3) 
-    mm.send_message("Beto", "Carlos", "Qué pasa Carlos", "conv2", 1)
-    mm.send_message("Carlos", "Beto", "Todo bien Beto", "conv2", 2)
-    mm.send_message("Beto", "Carlos", "Aquí andamos", "conv2", 3)
-    mm.send_message("Ana", "David", "Hola tío David", "conv3", 1)
+    gm.enviar_mensaje("Ana", "Beto", "¡Hola Beto!", "conv1", 1)
+    gm.enviar_mensaje("Beto", "Ana", "Hola Ana, ¿cómo estás?", "conv1", 2)
+    gm.enviar_mensaje("Ana", "Beto", "Bien, trabajando en Neo4j.", "conv1", 3) 
+    gm.enviar_mensaje("Beto", "Carlos", "Qué pasa Carlos", "conv2", 1)
+    gm.enviar_mensaje("Carlos", "Beto", "Todo bien Beto", "conv2", 2)
+    gm.enviar_mensaje("Beto", "Carlos", "Aquí andamos", "conv2", 3)
+    gm.enviar_mensaje("Ana", "David", "Hola tío David", "conv3", 1)
     print("\n--- Generando Ejemplos de Publicaciones ---")
-    um.create_connection("Ana", "Beto", "WORK") 
-    pm.create_post("Ana", "Actualización del Proyecto", "Estamos progresando mucho", mentions=["Beto", "Carlos"])
+    gu.crear_relacion("Ana", "Beto", "TRABAJO") 
+    gp.crear_publicacion("Ana", "Actualización del Proyecto", "Estamos progresando mucho", menciones=["Beto", "Carlos"])
     print("\n--- Ejemplos completados ---")
 
 
-def interactive_menu():
-    um = UserManager()
-    pm = PostManager()
+def menu_interactivo():
+    gu = GestorUsuarios()
+    gp = GestorPublicaciones()
     
     while True:
         print("\n==============================================")
@@ -63,47 +63,47 @@ def interactive_menu():
         print("6. Salir")
         print("==============================================")
         
-        option = input("Seleccione una opción: ")
+        opcion = input("Seleccione una opción: ")
         
-        match option:
+        match opcion:
             case "1":
-                seed()
+                semilla()
             case "2":
-                name = input("Nombre del usuario: ")
-                print("Tipos disponibles: Person, Company, EducationCenter")
-                user_type = input("Tipo de usuario (Enter para 'Person'): ")
-                if not user_type:
-                    user_type = "Person"
+                nombre = input("Nombre del usuario: ")
+                print("Tipos disponibles: Persona, Empresa, CentroEducativo")
+                tipo_usuario = input("Tipo de usuario (Enter para 'Persona'): ")
+                if not tipo_usuario:
+                    tipo_usuario = "Persona"
                 try:
-                    um.create_user(name, user_type)
-                    print(f"Usuario {name} ({user_type}) creado exitosamente.")
+                    gu.crear_usuario(nombre, tipo_usuario)
+                    print(f"Usuario {nombre} ({tipo_usuario}) creado exitosamente.")
                 except Exception as e:
                     print(f"Error al crear usuario: {e}")
             case "3":
-                name1 = input("Nombre del primer usuario: ")
-                name2 = input("Nombre del segundo usuario: ")
-                print("Tipos disponibles: FRIEND, FAMILY, ACADEMIC, WORK")
-                rel_type = input("Tipo de relación: ")
+                nombre1 = input("Nombre del primer usuario: ")
+                nombre2 = input("Nombre del segundo usuario: ")
+                print("Tipos disponibles: AMIGO, FAMILIA, ACADEMICO, TRABAJO")
+                tipo_rel = input("Tipo de relación: ")
                 try:
-                    um.create_connection(name1, name2, rel_type)
-                    print(f"Relación {rel_type} creada entre {name1} y {name2}.")
+                    gu.crear_relacion(nombre1, nombre2, tipo_rel)
+                    print(f"Relación {tipo_rel} creada entre {nombre1} y {nombre2}.")
                 except Exception as e:
                     print(f"Error al crear relación: {e}")
             case "4":
-                author = input("Nombre del autor: ")
-                title = input("Título del post: ")
-                body = input("Contenido del post: ")
-                mentions_input = input("Menciones (nombres separados por coma, Enter para ninguna): ")
-                mentions = [m.strip() for m in mentions_input.split(",")] if mentions_input else []
+                autor = input("Nombre del autor: ")
+                titulo = input("Título del post: ")
+                cuerpo = input("Contenido del post: ")
+                menciones_input = input("Menciones (nombres separados por coma, Enter para ninguna): ")
+                menciones = [m.strip() for m in menciones_input.split(",")] if menciones_input else []
                 try:
-                    pm.create_post(author, title, body, mentions)
-                    print(f"Post creado por {author} exitosamente.")
+                    gp.crear_publicacion(autor, titulo, cuerpo, menciones)
+                    print(f"Post creado por {autor} exitosamente.")
                 except Exception as e:
                     print(f"Error al crear post: {e}")
             case "5":
-                confirm = input("¿Seguro que quiere borrar TODA la base de datos? (s/n): ")
-                if confirm.lower() == 's':
-                    clear_db()
+                confirmar = input("¿Seguro que quiere borrar TODA la base de datos? (s/n): ")
+                if confirmar.lower() == 's':
+                    limpiar_bd()
             case "6":
                 print("Cerrando...")
                 break
@@ -111,4 +111,4 @@ def interactive_menu():
                 print("Opción no válida, intente de nuevo.")
 
 if __name__ == "__main__":
-    interactive_menu()
+    menu_interactivo()

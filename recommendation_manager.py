@@ -1,37 +1,35 @@
-from connection import get_connection
+from connection import obtener_conexion
 
-class RecommendationManager:
+class GestorRecomendaciones:
     def __init__(self):
-        self.driver = get_connection().get_driver()
+        self.driver = obtener_conexion().obtener_driver()
 
-    def recommend_by_hops(self, start_user, max_hops=3):
+    def recomendar_por_saltos(self, usuario_inicio, max_saltos=3):
 
-        query = (
-            "MATCH (u1:Person {name: $name})-[r1]-(u2:Person) "
-            f"MATCH (u2)-[r2*1..{max_hops}]-(u3:Person) "
+        consulta = (
+            "MATCH (u1:Persona {nombre: $nombre})-[r1]-(u2:Persona) "
+            f"MATCH (u2)-[r2*1..{max_saltos}]-(u3:Persona) "
             "WHERE u1 <> u3 AND NOT (u1)--(u3) "
-            "RETURN u2.name AS intermediate, u3.name AS recommendation, length(r2) AS hops "
-            "ORDER BY hops ASC"
-            "RETURN u2.name AS intermediate, u3.name AS recommendation, length(r2) AS hops "
-            "ORDER BY hops ASC"
+            "RETURN u2.nombre AS intermedio, u3.nombre AS recomendacion, length(r2) AS saltos "
+            "ORDER BY saltos ASC"
         )
-        result, summary, keys = self.driver.execute_query(query, name=start_user, database="neo4j")
-        return [record.data() for record in result]
+        resultado, resumen, llaves = self.driver.execute_query(consulta, nombre=usuario_inicio, database="neo4j")
+        return [registro.data() for registro in resultado]
 
-    def recommend_by_interaction(self, start_user, min_messages=2):    
-        query = (
-            "MATCH (u1:Person {name: $name})-[r1:SENT_MESSAGE]-(u2:Person) "
-            "WITH u1, u2, count(r1) as msg_count_1_2 "
-            "WHERE msg_count_1_2 > $min_msg "
+    def recomendar_por_interaccion(self, usuario_inicio, min_mensajes=2):    
+        consulta = (
+            "MATCH (u1:Persona {nombre: $nombre})-[r1:ENVIO_MENSAJE]-(u2:Persona) "
+            "WITH u1, u2, count(r1) as cuenta_msg_1_2 "
+            "WHERE cuenta_msg_1_2 > $min_msg "
             
-            "MATCH (u2)-[r2:SENT_MESSAGE]-(u3:Person) "
+            "MATCH (u2)-[r2:ENVIO_MENSAJE]-(u3:Persona) "
             "WHERE u1 <> u3 AND NOT (u1)--(u3) "
-            "WITH u1, u2, u3, msg_count_1_2, count(r2) as msg_count_2_3 "
-            "WHERE msg_count_2_3 > $min_msg "
+            "WITH u1, u2, u3, cuenta_msg_1_2, count(r2) as cuenta_msg_2_3 "
+            "WHERE cuenta_msg_2_3 > $min_msg "
             
-            "RETURN u3.name AS recommendation, u2.name AS via, "
-            "msg_count_1_2, msg_count_2_3 "
-            "ORDER BY msg_count_1_2 DESC, msg_count_2_3 DESC"
+            "RETURN u3.nombre AS recomendacion, u2.nombre AS via, "
+            "cuenta_msg_1_2, cuenta_msg_2_3 "
+            "ORDER BY cuenta_msg_1_2 DESC, cuenta_msg_2_3 DESC"
         )
-        result, summary, keys = self.driver.execute_query(query, name=start_user, min_msg=min_messages, database="neo4j")
-        return [record.data() for record in result]
+        resultado, resumen, llaves = self.driver.execute_query(consulta, nombre=usuario_inicio, min_msg=min_mensajes, database="neo4j")
+        return [registro.data() for registro in resultado]

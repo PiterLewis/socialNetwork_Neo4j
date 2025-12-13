@@ -1,55 +1,55 @@
-from connection import get_connection
+from connection import obtener_conexion
 from datetime import datetime
 
-class PostManager:
+class GestorPublicaciones:
     def __init__(self):
-        self.driver = get_connection().get_driver()
+        self.driver = obtener_conexion().obtener_driver()
 
-    def create_post(self, author_name, title, body, mentions=None):
-        timestamp = datetime.now().isoformat()
-        if mentions is None:
-            mentions = []
+    def crear_publicacion(self, nombre_autor, titulo, cuerpo, menciones=None):
+        fecha_hora = datetime.now().isoformat()
+        if menciones is None:
+            menciones = []
         
-        # If no mentions, handle gracefully
-        if not mentions:
-            query = (
-                "MATCH (u:Person {name: $author}) "
-                "CREATE (p:Post {title: $title, body: $body, date: $timestamp}) "
-                "CREATE (u)-[:PUBLISHED]->(p) "
+        # Si no hay menciones, manejar sin ellas
+        if not menciones:
+            consulta = (
+                "MATCH (u:Persona {nombre: $autor}) "
+                "CREATE (p:Publicacion {titulo: $titulo, cuerpo: $cuerpo, fecha: $fecha_hora}) "
+                "CREATE (u)-[:PUBLICO]->(p) "
                 "RETURN p"
             )
-            self.driver.execute_query(query, author=author_name, title=title, body=body, timestamp=timestamp, mentions=mentions, database="neo4j")
+            self.driver.execute_query(consulta, autor=nombre_autor, titulo=titulo, cuerpo=cuerpo, fecha_hora=fecha_hora, menciones=menciones, database="neo4j")
         else:
-            # Validate mentions
-            missing_users = []
-            for mentioned_name in mentions:
-                check_query = "MATCH (u:Person {name: $name}) RETURN u"
-                result, _, _ = self.driver.execute_query(check_query, name=mentioned_name, database="neo4j")
-                if not result:
-                    missing_users.append(mentioned_name)
+            # Validar menciones
+            usuarios_faltantes = []
+            for nombre_mencionado in menciones:
+                consulta_check = "MATCH (u:Persona {nombre: $nombre}) RETURN u"
+                resultado, _, _ = self.driver.execute_query(consulta_check, nombre=nombre_mencionado, database="neo4j")
+                if not resultado:
+                    usuarios_faltantes.append(nombre_mencionado)
             
-            if missing_users:
-                raise ValueError(f"Los siguientes usuarios mencionados no existen: {', '.join(missing_users)}")
+            if usuarios_faltantes:
+                raise ValueError(f"Los siguientes usuarios mencionados no existen: {', '.join(usuarios_faltantes)}")
 
-            query = (
-                "MATCH (u:Person {name: $author}) "
-                "CREATE (p:Post {title: $title, body: $body, date: $timestamp}) "
-                "CREATE (u)-[:PUBLISHED]->(p) "
+            consulta = (
+                "MATCH (u:Persona {nombre: $autor}) "
+                "CREATE (p:Publicacion {titulo: $titulo, cuerpo: $cuerpo, fecha: $fecha_hora}) "
+                "CREATE (u)-[:PUBLICO]->(p) "
                 "WITH p "
-                "UNWIND $mentions AS connection_name "
-                "MATCH (m:Person {name: connection_name}) "
-                "CREATE (p)-[:MENTIONS]->(m) "
+                "UNWIND $menciones AS nombre_coneccion "
+                "MATCH (m:Persona {nombre: nombre_coneccion}) "
+                "CREATE (p)-[:MENCIONA]->(m) "
                 "RETURN p"
             )
-            self.driver.execute_query(query, author=author_name, title=title, body=body, timestamp=timestamp, mentions=mentions, database="neo4j")
+            self.driver.execute_query(consulta, autor=nombre_autor, titulo=titulo, cuerpo=cuerpo, fecha_hora=fecha_hora, menciones=menciones, database="neo4j")
             
-        print(f"Post created by {author_name}")
+        print(f"Publicación creada por {nombre_autor}")
 
-    def get_mentioned_work_colleagues(self, author_name):
-        query = (
-            "MATCH (author:Person {name: $name})-[:PUBLISHED]->(p:Post)-[:MENTIONS]->(mentioned:Person) "
-            "WHERE (author)-[:WORK]-(mentioned) "
-            "RETURN DISTINCT mentioned.name AS name"
+    def obtener_colegas_trabajo_mencionados(self, nombre_autor):
+        consulta = (
+            "MATCH (autor:Persona {nombre: $nombre})-[:PUBLICO]->(p:Publicacion)-[:MENCIONA]->(mencionado:Persona) "
+            "WHERE (autor)-[:TRABAJO]-(mencionado) "
+            "RETURN DISTINCT mencionado.nombre AS nombre"
         )
-        result, summary, keys = self.driver.execute_query(query, name=author_name, database="neo4j")
-        return [record["name"] for record in result]
+        resultado, resumen, llaves = self.driver.execute_query(consulta, nombre=nombre_autor, database="neo4j")
+        return [registro["nombre"] for registro in resultado]
