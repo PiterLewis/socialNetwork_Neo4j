@@ -1,5 +1,4 @@
 from connection import obtener_conexion
-# Nota: connection.py ahora exporta obtener_conexion y la clase Conexion
 
 class GestorUsuarios:
     def __init__(self):
@@ -13,10 +12,6 @@ class GestorUsuarios:
             f"MERGE (u:{tipo_usuario} {{nombre: $nombre, tipo: $tipo_usuario}}) "
             "RETURN u"
         )
-        # Nota: He agregado 'tipo' como propiedad para persistir el string original si necesario, 
-        # pero principalmente cambiamos el Label del nodo.
-        # En el código original era MERGE (u:{user_type} {name: $name})
-        # Ahora será MERGE (u:{tipo_usuario} {nombre: $nombre})
         
         consulta = (
             f"MERGE (u:{tipo_usuario} {{nombre: $nombre}}) "

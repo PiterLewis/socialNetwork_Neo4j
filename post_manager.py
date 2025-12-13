@@ -10,7 +10,7 @@ class GestorPublicaciones:
         if menciones is None:
             menciones = []
         
-        # Si no hay menciones, manejar sin ellas
+    
         if not menciones:
             consulta = (
                 "MATCH (u:Persona {nombre: $autor}) "
@@ -20,7 +20,7 @@ class GestorPublicaciones:
             )
             self.driver.execute_query(consulta, autor=nombre_autor, titulo=titulo, cuerpo=cuerpo, fecha_hora=fecha_hora, menciones=menciones, database="neo4j")
         else:
-            # Validar menciones
+            
             usuarios_faltantes = []
             for nombre_mencionado in menciones:
                 consulta_check = "MATCH (u:Persona {nombre: $nombre}) RETURN u"

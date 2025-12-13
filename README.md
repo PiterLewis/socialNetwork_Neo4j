@@ -69,6 +69,9 @@ uv run main.py
 (O `python main.py` si no usa `uv`)
 
 ### 4. Usar la consola
+
+Para que demostrar que el programa funcione correctamente, hemos decidido implementar una consola interactiva que permita al usuario interactuar con el programa. Normalmente se usaria a modo de API.
+
 Al iniciar, verá un menú interactivo en la consola. Seleccione la opción **1** para acceder a todas las herramientas disponibles. A continuación detallamos qué hace cada opción:
 
 1. **Generar Ejemplos (Seed)**: 
