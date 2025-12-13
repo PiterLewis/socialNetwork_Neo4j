@@ -46,5 +46,67 @@ def seed():
     pm.create_post("Ana", "Actualización del Proyecto", "Estamos progresando mucho", mentions=["Beto", "Carlos"])
     print("Sembrado completo.")
 
+def interactive_menu():
+    um = UserManager()
+    
+    while True:
+        print("\n==============================================")
+        print("       CONSOLA INTERACTIVA DE NEO4J")
+        print("==============================================")
+        print("1. Sembrar datos de ejemplo (Seed)")
+        print("2. Crear Usuario")
+        print("3. Crear Relación")
+        print("4. Crear Publicación (Post)")
+        print("5. Limpiar Base de Datos")
+        print("6. Salir")
+        print("==============================================")
+        
+        option = input("Seleccione una opción: ")
+        
+        match option:
+            case "1":
+                seed()
+            case "2":
+                name = input("Nombre del usuario: ")
+                print("Tipos disponibles: Person, Company, EducationCenter")
+                user_type = input("Tipo de usuario (Enter para 'Person'): ")
+                if not user_type:
+                    user_type = "Person"
+                try:
+                    um.create_user(name, user_type)
+                    print(f"Usuario {name} ({user_type}) creado exitosamente.")
+                except Exception as e:
+                    print(f"Error al crear usuario: {e}")
+            case "3":
+                name1 = input("Nombre del primer usuario: ")
+                name2 = input("Nombre del segundo usuario: ")
+                print("Tipos disponibles: FRIEND, FAMILY, ACADEMIC, WORK")
+                rel_type = input("Tipo de relación: ")
+                try:
+                    um.create_connection(name1, name2, rel_type)
+                    print(f"Relación {rel_type} creada entre {name1} y {name2}.")
+                except Exception as e:
+                    print(f"Error al crear relación: {e}")
+            case "4":
+                author = input("Nombre del autor: ")
+                title = input("Título del post: ")
+                body = input("Contenido del post: ")
+                mentions_input = input("Menciones (nombres separados por coma, Enter para ninguna): ")
+                mentions = [m.strip() for m in mentions_input.split(",")] if mentions_input else []
+                try:
+                    pm.create_post(author, title, body, mentions)
+                    print(f"Post creado por {author} exitosamente.")
+                except Exception as e:
+                    print(f"Error al crear post: {e}")
+            case "5":
+                confirm = input("¿Seguro que quiere borrar TODA la base de datos? (s/n): ")
+                if confirm.lower() == 's':
+                    clear_db()
+            case "6":
+                print("¡Hasta luego!")
+                break
+            case _:
+                print("Opción no válida, intente de nuevo.")
+
 if __name__ == "__main__":
-    seed()
+    interactive_menu()
