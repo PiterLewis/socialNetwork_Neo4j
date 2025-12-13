@@ -1,23 +1,14 @@
-from user_manager import GestorUsuarios
-from message_manager import GestorMensajes
-from post_manager import GestorPublicaciones
-from connection import obtener_conexion
+from gestor_usuarios import GestorUsuarios
+from gestor_mensajes import GestorMensajes
+from gestor_publicaciones import GestorPublicaciones
+from conexion import obtener_conexion
 
-<<<<<<< HEAD
 def limpiar_bd():
     conn = obtener_conexion()
     conn.conectar_neo()
     conn.limpiar_todo()
     conn.cerrar()
     print("Base de datos limpiada.")
-=======
-def clear_db():
-    conn = get_connection()
-    conn.connect_to_neo()
-    conn.clean_all()
-    conn.close()
-    print("Base de datos limpia")
->>>>>>> f593055cbdea242f61a0036f77db050e50ba724b
 
 def semilla():
     limpiar_bd()

@@ -1,10 +1,10 @@
 from neo4j import GraphDatabase
-from connection import Connection, get_connection 
-import seed_data
+from conexion import obtener_conexion
+import datos_semilla
 
 
-def main():
-    seed_data.interactive_menu()
+def inicio():
+    datos_semilla.menu_interactivo()
 
 if __name__ == "__main__":
-    main()
+    inicio()

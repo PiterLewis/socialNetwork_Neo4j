@@ -1,5 +1,5 @@
-from connection import obtener_conexion
-# Nota: connection.py ahora exporta obtener_conexion y la clase Conexion
+from conexion import obtener_conexion
+# Nota: conexion.py ahora exporta obtener_conexion y la clase Conexion
 
 class GestorUsuarios:
     def __init__(self):
