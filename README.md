@@ -28,7 +28,22 @@ Todo esto se conecta a una base de datos **Neo4j** para guardar y consultar la i
 
 Para que el código funcione en su ordenador, necesita seguir estos sencillos pasos:
 
-### 1. Configurar las credenciales
+### 1. Instalar dependencias
+Antes de nada, necesitamos instalar las librerías necesarias. Puede hacerlo de dos formas:
+
+**Opción A: Usando pip (Estándar)**
+```bash
+pip install -r requirements.txt
+```
+
+**Opción B: Usando uv (Moderno)**
+Si utiliza `uv`, puede instalar todo rápidamente con:
+```bash
+uv add python-dotenv neo4j
+```
+
+
+### 2. Configurar las credenciales
 El proyecto necesita conectarse a su base de datos Neo4j. Tiene dos opciones para hacerlo:
 
 **Opción A: Usar archivo .env**
@@ -45,7 +60,7 @@ Si le resulta más cómodo, puede abrir el archivo `connection.py` y escribir su
 
 > **Nota:** Si su base de datos no se llama `neo4j` (que es la por defecto), tendrá que cambiar el nombre en los archivos de código donde aparece `database="neo4j"`.
 
-### 2. Iniciar el programa
+### 3. Iniciar el programa
 Una vez configurado, simplemente ejecute el archivo principal:
 
 ```bash
@@ -53,7 +68,7 @@ uv run main.py
 ```
 (O `python main.py` si no usa `uv`)
 
-### 3. Usar la consola
+### 4. Usar la consola
 Al iniciar, verá un menú interactivo en la consola. Seleccione la opción **1** para acceder a todas las herramientas disponibles. A continuación detallamos qué hace cada opción:
 
 1. **Generar Ejemplos (Seed)**: 
