@@ -48,7 +48,15 @@ class GestorPublicaciones:
     def obtener_colegas_trabajo_mencionados(self, nombre_autor):
         consulta = (
             "MATCH (autor:Persona {nombre: $nombre})-[:PUBLICO]->(p:Publicacion)-[:MENCIONA]->(mencionado:Persona) "
-            "WHERE (autor)-[:LABORAL]-(mencionado) "
+            "WHERE (autor)-[:LABORAL]->(:Empresa)<-[:LABORAL]-(mencionado) "
+            "RETURN DISTINCT mencionado.nombre AS nombre"
+        )
+        resultado, resumen, llaves = self.driver.execute_query(consulta, nombre=nombre_autor, database="neo4j")
+        return [registro["nombre"] for registro in resultado]
+
+    def obtener_menciones(self, nombre_autor):
+        consulta = (
+            "MATCH (autor:Persona {nombre: $nombre})-[:PUBLICO]->(p:Publicacion)-[:MENCIONA]->(mencionado:Persona) "
             "RETURN DISTINCT mencionado.nombre AS nombre"
         )
         resultado, resumen, llaves = self.driver.execute_query(consulta, nombre=nombre_autor, database="neo4j")

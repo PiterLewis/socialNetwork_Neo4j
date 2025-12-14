@@ -93,15 +93,18 @@ def menu_interactivo():
         print("2. Crear Usuario")
         print("3. Crear Relación")
         print("4. Crear Publicación (Post)")
+        print("\n")
         print("--- Mensajería ---")
         print("5. Enviar Mensaje")
         print("6. Ver Conversación")
         print("7. Ver Mensajes Recientes")
+        print("\n")
         print("--- Recomendaciones y Consultas ---")
         print("8. Recomendar por Saltos (Amigos de amigos)")
         print("9. Recomendar por Interacción")
         print("10. Ver Colegas Del trabajo Mencionados en Posts")
         print("11. Ver Usuarios Mencionados (Todos)")
+        print("\n")
         print("--- Gestión ---")
         print("12. Limpiar Base de Datos")
         print("13. Salir")
@@ -194,7 +197,7 @@ def menu_interactivo():
             case "10":
                 autor = input("Autor del post: ")
                 try:
-                    colegas = gp.obtener_colegas_trabajo_mencionados(autor)
+                    colegas = gp.obtener_menciones(autor)
                     print(f"Colegas mencionados por {autor}: {', '.join(colegas)}")
                 except Exception as e:
                     print(f"Error: {e}")
