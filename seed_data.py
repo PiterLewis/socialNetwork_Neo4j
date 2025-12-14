@@ -100,10 +100,11 @@ def menu_interactivo():
         print("--- Recomendaciones y Consultas ---")
         print("8. Recomendar por Saltos (Amigos de amigos)")
         print("9. Recomendar por Interacción")
-        print("10. Ver Colegas Mencionados en Posts")
+        print("10. Ver Colegas Del trabajo Mencionados en Posts")
+        print("11. Ver Usuarios Mencionados (Todos)")
         print("--- Gestión ---")
-        print("11. Limpiar Base de Datos")
-        print("12. Salir")
+        print("12. Limpiar Base de Datos")
+        print("13. Salir")
         print("==============================================")
         
         opcion = input("Seleccione una opción: ")
@@ -198,10 +199,17 @@ def menu_interactivo():
                 except Exception as e:
                     print(f"Error: {e}")
             case "11":
+                autor = input("Autor del post: ")
+                try:
+                    mencionados = gp.obtener_menciones(autor)
+                    print(f"Usuarios mencionados por {autor}: {', '.join(mencionados)}")
+                except Exception as e:
+                    print(f"Error: {e}")
+            case "12":
                 confirmar = input("¿Seguro que quiere borrar TODA la base de datos? (s/n): ")
                 if confirmar.lower() == 's':
                     limpiar_bd()
-            case "12":
+            case "13":
                 print("Cerrando...")
                 break
             case _:
